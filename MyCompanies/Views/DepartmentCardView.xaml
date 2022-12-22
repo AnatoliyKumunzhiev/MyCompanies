@@ -1,0 +1,63 @@
+﻿<Window x:Class="MyCompanies.Views.DepartmentCardView"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:MyCompanies.ViewModels"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+        mc:Ignorable="d"
+        Name="Window"
+        d:DataContext="{d:DesignInstance viewModels:DepartmentCardViewModel}"
+        Title="Подразделение" Height="600" Width="800">
+    <materialDesign:Card Style="{StaticResource BaseCardStyle}">
+        <Border Style="{StaticResource BaseBorderStyle}" >
+            <Grid Margin="15">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Label Grid.Row="0" Grid.Column="0" Style="{StaticResource BaseLabelStyle}" Content="Название Подразделения"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Style="{StaticResource BaseTexBoxStyle}" Text="{Binding Model.Name}"/>
+
+                <Label Grid.Row="1" Grid.Column="0" Style="{StaticResource BaseLabelStyle}" Content="Руководитель"/>
+                <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Model.Employees}" Style="{StaticResource BaseComboBoxStyle}" SelectedItem="{Binding SelectedSupervisor, Mode=TwoWay}" DisplayMemberPath="FullName"/>
+
+                <Grid Margin="15" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" Visibility="{Binding IsEmployeesVisible, Converter={StaticResource BooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Style="{StaticResource HeaderLabelStyle}" Content="Список сотрудников"/>
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding Model.Employees}" 
+                              SelectedItem="{Binding SelectedEmployee}"
+                              AutoGenerateColumns="False" 
+                              IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ФИО" Binding="{Binding FullName}"/>
+                            <DataGridTextColumn Header="Дата рождения" Binding="{Binding BirthDate, StringFormat='dd.MM.yyyy'}"/>
+                            <DataGridTextColumn Header="Дата приема на работу" Binding="{Binding EmploymentDate, StringFormat='dd.MM.yyyy'}"/>
+                            <DataGridTextColumn Header="Должность" Binding="{Binding Position}"/>
+                            <DataGridTextColumn Header="Зарплата (руб)" Binding="{Binding Salary}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+                <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0" Content="Применить" Margin="15" Command="{Binding ApplyChangesCommand}" HorizontalAlignment="Left"/>
+                    <Button Grid.Column="1" Content="Закрыть" Margin="15" HorizontalAlignment="Right" Command="{Binding CloseWindowCommand}" CommandParameter="{Binding ElementName=Window}"/>
+                </Grid>
+            </Grid>
+        </Border>
+    </materialDesign:Card>
+</Window>
